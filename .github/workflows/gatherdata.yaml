@@ -1,8 +1,28 @@
-on: 
-  schedule:
+#on:
+#  schedule:
+#    - cron:  '*/60 */1 * * *' # Run every hour on 10 machines
     
 name: Gather Data
 
 jobs:
   Linux:
+    name: Linux-data
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        bot: [1,2,3,4,5,6,7,8,9,10]
     steps:
+      - name: Get current time
+        uses: gerred/actions/current-time@master
+        id: current-time
+      - name: Use current time
+        env:
+          TIME: "${{ steps.current-time.outputs.time }}"
+          STRLENGTH: $(echo -n "${{ steps.current-time.outputs.time }}" | wc -m)
+        run: |
+          echo -n '=== ' >> info-${{ matrix.bot }}
+          printf '=%.0s' {1..100}
+          echo ' ==='
+          echo === $TIME ===
+          printf '=%.0s' {1..100}
+          cat /proc/cpuinfo | grep 'model name' | uniq >>
